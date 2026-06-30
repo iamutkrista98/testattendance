@@ -1,0 +1,10 @@
+[
+  {
+    "id": "admin_1",
+    "name": "Sunita Rana",
+    "email": "hr@radiantis.edu.np",
+    "passwordHash": "$2a$08$i31rv4l.oQ1swpgAhWMgsekVY283W75u6uxGIh3ghhcN0Rht/eQD.",
+    "role": "HR Administrator",
+    "designation": "Head of Human Resources"
+  }
+]

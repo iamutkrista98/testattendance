@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radiant International School — Attendance</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="auth-screen">
+  <aside class="auth-aside">
+    <div class="brand-row">
+      <div class="seal">RIS</div>
+      <div>
+        <div class="brand-name">Radiant International School</div>
+        <div class="brand-sub">Attendance Register</div>
+      </div>
+    </div>
+
+    <div class="aside-hero">
+      <div class="aside-eyebrow">Staff Attendance Office</div>
+      <h1>Every check-in, recorded with the care of a school register.</h1>
+      <p>A single place for teachers and staff to mark their day, and for the HR office to watch over punctuality, performance and leave — built for a campus of over a hundred people.</p>
+    </div>
+
+    <div class="aside-stats">
+      <div class="aside-stat">
+        <div class="num">108</div>
+        <div class="lbl">Staff on roll</div>
+      </div>
+      <div class="aside-stat">
+        <div class="num">12</div>
+        <div class="lbl">Departments</div>
+      </div>
+      <div class="aside-stat">
+        <div class="num">99.6%</div>
+        <div class="lbl">Uptime</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <div class="auth-card-mobile-brand">
+        <div class="seal">RIS</div>
+        <div>
+          <div class="brand-name">Radiant International School</div>
+          <div class="brand-sub">Attendance Register</div>
+        </div>
+      </div>
+
+      <div class="role-toggle">
+        <button id="tab-staff" class="active" onclick="switchRole('staff')">Staff Sign In</button>
+        <button id="tab-admin" onclick="switchRole('admin')">HR Admin</button>
+      </div>
+
+      <div id="panel-staff">
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in to mark your attendance for today.</p>
+        <div class="auth-error" id="err-staff"></div>
+        <form onsubmit="return doLogin(event,'staff')">
+          <div class="field">
+            <label>Work email</label>
+            <input type="email" id="staff-email" placeholder="firstname.lastname@radiantis.edu.np" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="staff-password" placeholder="••••••••" required>
+          </div>
+          <button class="btn btn-primary" type="submit">Sign in</button>
+        </form>
+        <div class="demo-box"><b>Demo access</b> — any seeded staff email · password <span class="mono">Welcome@123</span></div>
+      </div>
+
+      <div id="panel-admin" class="hidden">
+        <h2>HR Administrator</h2>
+        <p class="sub">Sign in to manage attendance, approvals and reports.</p>
+        <div class="auth-error" id="err-admin"></div>
+        <form onsubmit="return doLogin(event,'admin')">
+          <div class="field">
+            <label>HR email</label>
+            <input type="email" id="admin-email" placeholder="hr@radiantis.edu.np" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="admin-password" placeholder="••••••••" required>
+          </div>
+          <button class="btn btn-gold" style="width:100%" type="submit">Sign in as HR Admin</button>
+        </form>
+        <div class="demo-box"><b>Demo access</b> — <span class="mono">hr@radiantis.edu.np</span> · password <span class="mono">Admin@123</span></div>
+      </div>
+
+      <div class="auth-foot">Radiant International School · Internal staff portal</div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-host"></div>
+
+<script src="/js/common.js"></script>
+<script>
+function switchRole(role){
+  document.getElementById('tab-staff').classList.toggle('active', role==='staff');
+  document.getElementById('tab-admin').classList.toggle('active', role==='admin');
+  document.getElementById('panel-staff').classList.toggle('hidden', role!=='staff');
+  document.getElementById('panel-admin').classList.toggle('hidden', role!=='admin');
+}
+
+async function doLogin(e, role){
+  e.preventDefault();
+  const errBox = document.getElementById('err-' + role);
+  errBox.classList.remove('show');
+  const email = document.getElementById(role + '-email').value;
+  const password = document.getElementById(role + '-password').value;
+  try{
+    const res = await fetch(`/api/auth/${role === 'admin' ? 'admin' : 'staff'}/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if(!res.ok){ throw new Error(data.error || 'Sign-in failed.'); }
+    window.location.href = role === 'admin' ? '/admin.html' : '/staff.html';
+  }catch(err){
+    errBox.textContent = err.message;
+    errBox.classList.add('show');
+  }
+  return false;
+}
+
+// If already signed in, jump straight to the right dashboard.
+(async function(){
+  try{
+    const s = await fetch('/api/auth/staff/me');
+    if(s.ok){ window.location.href = '/staff.html'; return; }
+  }catch(e){}
+  try{
+    const a = await fetch('/api/auth/admin/me');
+    if(a.ok){ window.location.href = '/admin.html'; return; }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

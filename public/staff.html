@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Attendance — Radiant International School</title>
+<link rel="stylesheet" href="/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="sidebar-scrim" id="scrim" onclick="toggleSidebar(false)"></div>
+
+<div class="app-shell">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="seal">RIS</div>
+      <div>
+        <div class="brand-name">Radiant International</div>
+        <div class="brand-sub">STAFF PORTAL</div>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-view="report" onclick="showView('report')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+      Monthly Report
+    </div>
+    <div class="nav-item" data-view="requests" onclick="showView('requests')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+      Early Checkouts
+    </div>
+    <div class="nav-item" data-view="profile" onclick="showView('profile')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg>
+      My Profile
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="avatar" id="sb-avatar" style="background:#1E3A5F">--</div>
+      <div class="who">
+        <div class="name" id="sb-name">Loading…</div>
+        <div class="role" id="sb-role">—</div>
+      </div>
+      <div class="icon-btn" title="Sign out" onclick="signOut()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="flex center gap-12">
+        <div class="icon-btn menu-btn" onclick="toggleSidebar(true)" style="color:var(--navy-700);border-color:var(--line)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </div>
+        <div>
+          <h1 id="page-title">Dashboard</h1>
+          <div class="meta" id="page-sub">—</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ===================== DASHBOARD VIEW ===================== -->
+      <section id="view-dashboard">
+        <div class="grid grid-2">
+          <div>
+            <div class="grid grid-stats" style="margin-bottom:20px;">
+              <div class="card stat-card">
+                <div class="ic" style="background:var(--success-tint)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <div class="num" id="kpi-present">—</div>
+                <div class="lbl">Present days this month</div>
+              </div>
+              <div class="card stat-card">
+                <div class="ic" style="background:var(--late-tint)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--late)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </div>
+                <div class="num" id="kpi-late">—</div>
+                <div class="lbl">Late arrivals this month</div>
+              </div>
+              <div class="card stat-card">
+                <div class="ic" style="background:var(--info-tint)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+                </div>
+                <div class="num" id="kpi-hours">—</div>
+                <div class="lbl">Avg. hours per day</div>
+              </div>
+              <div class="card stat-card">
+                <div class="ic" style="background:var(--brass-tint)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 12.5l2 2 3.5-4"/></svg>
+                </div>
+                <div class="num" id="kpi-rate">—</div>
+                <div class="lbl">Attendance rate</div>
+              </div>
+            </div>
+
+            <div class="card card-pad">
+              <div class="section-head">
+                <div>
+                  <h3>Last 10 working days</h3>
+                  <div class="sub">Your check-in and check-out timeline</div>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table id="recent-table">
+                  <thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Signature Dial -->
+          <div class="dial-card">
+            <div class="dial-top">
+              <div>
+                <div class="dial-clock" id="live-clock">--:--:--</div>
+                <div class="dial-date" id="live-date">—</div>
+              </div>
+              <div class="seal" style="width:38px;height:38px;font-size:11px;">RIS</div>
+            </div>
+            <div class="dial-wrap">
+              <div class="dial">
+                <div class="dial-inner">
+                  <div class="time" id="dial-status-time">--:--</div>
+                  <div class="status-lbl" id="dial-status-label">Not checked in</div>
+                </div>
+              </div>
+              <div class="dial-actions">
+                <button class="btn btn-gold" id="btn-checkin" onclick="checkIn()">Check In</button>
+                <button class="btn btn-ghost" id="btn-checkout" style="border-color:rgba(255,255,255,.25); color:#fff;" onclick="checkOut()" disabled>Check Out</button>
+              </div>
+              <div class="dial-foot" id="shift-note">Shift 08:00 — 16:00</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== MONTHLY REPORT VIEW ===================== -->
+      <section id="view-report" class="hidden">
+        <div class="section-head">
+          <div>
+            <h3 id="report-month-label" style="font-size:18px;">—</h3>
+            <div class="sub">Your evaluated performance for the month</div>
+          </div>
+          <input type="month" id="report-month-input" class="select">
+        </div>
+
+        <div class="grid grid-3" style="margin-bottom:20px;">
+          <div class="card card-pad flex center gap-16">
+            <div class="ring-wrap">
+              <svg width="104" height="104" viewBox="0 0 104 104">
+                <circle cx="52" cy="52" r="44" stroke="var(--line)" stroke-width="10" fill="none"/>
+                <circle id="ring-attendance" cx="52" cy="52" r="44" stroke="var(--success)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="276.4" stroke-dashoffset="276.4"/>
+              </svg>
+              <div class="ring-label"><div class="pct" id="ring-attendance-pct">0%</div><div class="tag">Attendance</div></div>
+            </div>
+            <div>
+              <div style="font-weight:700; font-size:14px;">Attendance Rate</div>
+              <div class="muted" style="font-size:12.5px; margin-top:4px;">Share of working days marked present this month, including late arrivals.</div>
+            </div>
+          </div>
+          <div class="card card-pad flex center gap-16">
+            <div class="ring-wrap">
+              <svg width="104" height="104" viewBox="0 0 104 104">
+                <circle cx="52" cy="52" r="44" stroke="var(--line)" stroke-width="10" fill="none"/>
+                <circle id="ring-punctuality" cx="52" cy="52" r="44" stroke="var(--brass)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="276.4" stroke-dashoffset="276.4"/>
+              </svg>
+              <div class="ring-label"><div class="pct" id="ring-punctuality-pct">0%</div><div class="tag">On Time</div></div>
+            </div>
+            <div>
+              <div style="font-weight:700; font-size:14px;">Punctuality Rate</div>
+              <div class="muted" style="font-size:12.5px; margin-top:4px;">Of days you attended, the share you arrived within grace period.</div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <div class="info-list">
+              <div class="info-row"><span class="k">Working days</span><span class="v" id="rep-working">—</span></div>
+              <div class="info-row"><span class="k">Absences</span><span class="v" id="rep-absent">—</span></div>
+              <div class="info-row"><span class="k">Total hours logged</span><span class="v" id="rep-hours">—</span></div>
+              <div class="info-row"><span class="k">Early checkouts</span><span class="v" id="rep-early">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="card card-pad">
+            <div class="section-head"><h3>Daily hours logged</h3></div>
+            <canvas id="chart-hours" height="190"></canvas>
+          </div>
+          <div class="card card-pad">
+            <div class="section-head"><h3>Attendance mix</h3></div>
+            <canvas id="chart-mix" height="190"></canvas>
+          </div>
+        </div>
+
+        <div class="card card-pad" style="margin-top:20px;">
+          <div class="section-head"><h3>Daily log</h3></div>
+          <div class="table-wrap">
+            <table id="report-table">
+              <thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== REQUESTS VIEW ===================== -->
+      <section id="view-requests" class="hidden">
+        <div class="card card-pad">
+          <div class="section-head">
+            <div>
+              <h3>Early checkout requests</h3>
+              <div class="sub">Every early departure is logged here with HR's decision</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="requests-table">
+              <thead><tr><th>Date</th><th>Departed</th><th>Reason</th><th>Status</th><th>Reviewed by</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== PROFILE VIEW ===================== -->
+      <section id="view-profile" class="hidden">
+        <div class="grid grid-2">
+          <div class="card card-pad">
+            <div class="flex center gap-16" style="margin-bottom:22px;">
+              <div class="avatar" id="profile-avatar" style="width:62px;height:62px;font-size:20px;">--</div>
+              <div>
+                <div style="font-weight:700; font-size:17px;" id="profile-name">—</div>
+                <div class="muted" style="font-size:13px;" id="profile-role">—</div>
+              </div>
+            </div>
+            <div class="info-list">
+              <div class="info-row"><span class="k">Employee ID</span><span class="v mono" id="p-empid">—</span></div>
+              <div class="info-row"><span class="k">Department</span><span class="v" id="p-dept">—</span></div>
+              <div class="info-row"><span class="k">Email</span><span class="v" id="p-email">—</span></div>
+              <div class="info-row"><span class="k">Phone</span><span class="v" id="p-phone">—</span></div>
+              <div class="info-row"><span class="k">Date joined</span><span class="v" id="p-join">—</span></div>
+              <div class="info-row"><span class="k">Shift hours</span><span class="v" id="p-shift">—</span></div>
+              <div class="info-row"><span class="k">Status</span><span class="v" id="p-status">—</span></div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <div class="section-head"><h3>About this portal</h3></div>
+            <p class="muted" style="font-size:13.5px; line-height:1.7;">
+              Use the dial on your dashboard to check in each morning and check out at the end of your shift.
+              If you need to leave before <span id="p-shift-end">16:00</span>, the system will ask for a brief reason —
+              this is sent straight to the HR office for approval, and you can track its status under
+              <b>Early Checkouts</b> at any time.
+            </p>
+            <p class="muted" style="font-size:13.5px; line-height:1.7; margin-top:12px;">
+              Your <b>Monthly Report</b> updates automatically as you check in and out, so you always know exactly
+              where your attendance and punctuality stand.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- Early checkout modal -->
+<div class="modal-backdrop hidden" id="early-modal">
+  <div class="modal">
+    <h3>Leaving early?</h3>
+    <p class="sub" id="early-modal-sub">Your shift hasn't ended yet — let HR know why so they can review and approve it.</p>
+    <div class="field">
+      <label>Reason for early checkout</label>
+      <textarea id="early-reason" placeholder="e.g. Medical appointment, family emergency…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeEarlyModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="submitEarlyCheckout()">Submit & Check Out</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-host"></div>
+
+<script src="/js/common.js"></script>
+<script src="/js/staff.js"></script>
+</body>
+</html>
